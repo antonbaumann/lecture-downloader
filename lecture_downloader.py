@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 import subprocess
 import requests
@@ -48,7 +49,7 @@ def arguments():
 
 def extract_playlist_links(url) -> list:
     html = _fetch_html(url)
-    regex = re.compile(r'\bhttps://.*playlist.m3u8\b')
+    regex = re.compile(r'\bhttps://.*.m3u8\b')
     lst = regex.findall(html)
     return lst
 
