@@ -71,7 +71,10 @@ def select_playlist(playlists) -> str:
 
     n = -1
     while n not in range(1, len(playlists) + 1):
-        n = input('[!] select stream: ')
+        try:
+            n = int(input('[!] select stream: '))
+        except:
+            n = -1
     return playlists[n]
 
 
