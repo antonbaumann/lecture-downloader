@@ -23,6 +23,13 @@ def validate_output_file(p, filepath) -> str:
         return filepath
 
 
+def validate_time_string(p, time_string):
+    time_string_regex = re.compile(r'^[0-9]+:[0-5][0-9]:[0-5][0-9]$')
+    if not time_string_regex.match(time_string):
+        p.error(f'Time could not be parsed: {time_string}')
+    return time_string
+
+
 def arguments():
     parser = argparse.ArgumentParser(description="Download lectures")
     parser.add_argument(
@@ -40,6 +47,14 @@ def arguments():
         help='output file name',
         metavar='OUT_FILE',
         type=lambda x: validate_output_file(parser, x),
+    )
+    parser.add_argument(
+        '-t',
+        dest='timeout',
+        required=False,
+        help='record time',
+        metavar='TIME',
+        type=lambda x: validate_time_string(parser, x),
     )
     return parser.parse_args()
 
@@ -93,7 +108,8 @@ def main():
         print('[i] more than one stream found. select one')
         playlist_url = select_playlist(playlists)
 
-    command = f'ffmpeg -i "{playlist_url}" -codec copy {args.output_file}'
+    time_string = f' -t {args.timeout}' if args.timeout else ""
+    command = f'ffmpeg {time_string} -i "{playlist_url}" -codec copy {args.output_file}'
     subprocess.call(command, shell=True)
 
 
